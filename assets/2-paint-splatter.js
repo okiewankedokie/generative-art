@@ -112,6 +112,13 @@ function update()
             drawLine(brushes[i], brushes[i + j]);
         }
     }
+
+    /*
+    ctx.globalAlpha = .01; // this determines how much it "smears"
+    zoomfactor = 0;
+    shiftfactorx = 1;
+    ctx.drawImage(canvas, -(canvas.width * (zoomfactor + 1)) / 2 + shiftfactorx, -(canvas.height * (zoomfactor + 1)) / 2, canvas.width * (zoomfactor + 1), canvas.height * (zoomfactor + 1));
+    */
 }
 
 ctx.canvas.style.width='100%';

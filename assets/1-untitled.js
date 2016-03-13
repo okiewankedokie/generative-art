@@ -1,37 +1,148 @@
 var canvas = document.getElementById("Canvas");
 var ctx = canvas.getContext("2d");
 
-ctx.canvas.width  = window.innerWidth - 5;
-ctx.canvas.height = window.innerHeight - 5;
-
-var image = ctx.createImageData(ctx.canvas.width, ctx.canvas.height);
-
-function setPixel(image, x, y, r, g, b, a) {
-    var index = (x + y * image.width) * 4;
-    image.data[index + 0] = r;
-    image.data[index + 1] = g;
-    image.data[index + 2] = b;
-    image.data[index + 3] = a;
+function Brush () 
+{
+    this.x = 0;
+    this.y = 0;
+    this.dx = 0;
+    this.dy = 0;
+    this.size = 1;
+    this.color = '#FFFFFF';
+    this.alpha = .03;
+    this.accel = 1.02;
+    this.tension = .001;
+    this.alive = true;
 }
 
-var r = 0;
-var g = 0;
-var b = 0;
-var a = 255;
-
-for (x = 0; x < image.width; x++)
+Brush.prototype.init = function ()
 {
-    for (y = 0; y < image.height; y++)
-    {
-        r = (Math.tan((x) / 100) + 1) * 128;
-        r %= 256;
-        g = (Math.tan((y) / 100) + 1) * 128;
-        g %= 256;
-        // g = (Math.cos(y / 100) + 1) * 128;
-        // b = (Math.sin(x / 100) + 1) * 128;
-        setPixel(image, x, y, r, g, b, a);
+    // this.alpha = .1;
+    
+    /*
+    this.x = Math.random() * canvas.width - canvas.width / 2; 
+    this.y = Math.random() * canvas.height - canvas.height / 2;
+    */
+    this.x = 0;
+    this.y = 0;
+//    var dist = Math.sqrt(Math.pow(this.y, 2) + Math.pow(this.x, 2));
+    this.dx = (Math.random() - .5);
+    this.dy = (Math.random() - .5);
+    this.size = Math.random() * 100;
+    // this.color = '#'+Math.floor(Math.random()*16777215).toString(16); // elegant random color value code from http://www.paulirish.com/2009/random-hex-color-code-snippets/
+    this.color = Math.random() > .5 ? '#fff' : '#ff0';
+    if ( this.color == '#ff0' ) { this.color = Math.random() > .5 ? '#f00' : '#ff0'; }
+}
+
+Brush.prototype.update = function (x, y)
+{
+    if (this.alive) {
+        this.x += this.dx;
+        this.y += this.dy;
+
+        this.dx += (Math.random() - .5) * 2;
+        this.dy += (Math.random() - .5) * 2;
+
+        /* gravity */
+        this.dx -= (this.x - x) * this.tension;
+        this.dy -= (this.y - y) * this.tension;
+
+        if (this.dx > 5) { this.dx = 5; }
+        if (this.dx < -5) { this.dx = -5; }
+
+        if (this.dy > 5) { this.dy = 5; }
+        if (this.dy < -5) { this.dy = -5; }
+
+        this.size += Math.random() - .4;
+
+        if (this.size < 0) {
+            this.init();
+        }
+
+        else if (this.size > 100) {
+            this.init()
+        }
+
+        if ( Math.abs(this.x) > canvas.width / 2 || Math.abs(this.y) > canvas.height / 2 )
+        {
+            this.init();
+        }
+    }
+};
+
+Brush.prototype.draw = function ()
+{
+    if (this.alive) {
+        ctx.beginPath();
+        ctx.globalAlpha = this.color == '#fff' ? .02 : .01; //((100 - this.size) / 100) * .5;
+        ctx.arc(this.x, this.y, this.size, 0, 2*Math.PI);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        ctx.closePath();
     }
 }
 
-ctx.putImageData(image, 0, 0);
+Brush.prototype.kill = function ()
+{
+    this.alive = false;
+}
+
+function update()
+{
+    
+    /*ctx.canvas.width  = window.innerWidth;
+    ctx.canvas.height = window.innerHeight;
+    ctx.translate(ctx.canvas.width / 2, ctx.canvas.height / 2);
+    */
+
+    ctx.globalAlpha = .05;
+    ctx.fillStyle = '#000';
+    ctx.fillRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
+    
+    for (i = 0; i < num; i++)
+    {
+        brushes[i].update(0, 0);
+        brushes[i].draw();
+    }
+
+    // zoomfactor *= Math.random() < .01 ? -1 : 1;
+
+    ctx.globalAlpha = 1;
+    zoomfactor = .01;
+    ctx.drawImage(canvas, -(canvas.width * (zoomfactor + 1)) / 2, -(canvas.height * (zoomfactor + 1)) / 2, canvas.width * (zoomfactor + 1), canvas.height * (zoomfactor + 1));
+}
+
+ctx.canvas.style.width='100%';
+ctx.canvas.style.height='100%';
+ctx.canvas.width  = ctx.canvas.offsetWidth;
+ctx.canvas.height = ctx.canvas.offsetHeight;
+
+/*
+ctx.canvas.width  = window.innerWidth;
+ctx.canvas.height = window.innerHeight;
+*/
+ctx.translate(ctx.canvas.width / 2, ctx.canvas.height / 2);
+
+window.addEventListener('keydown', function (e) {
+    if (e.keyCode == 32) {
+        var w=window.open('about:blank','image from canvas');
+        w.document.write("<img src='"+canvas.toDataURL("image/png")+"' alt='from canvas'/>");
+    }
+}, false);
+
+ctx.fillStyle = '#000';
+ctx.fillRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
+
+var zoomfactor = .01;
+
+var num = 250;
+
+var brushes = [];
+for (i = 0; i < num; i++)
+{
+    brushes[i] = new Brush();
+    brushes[i].init();
+}
+
+setInterval(update, 20);
 

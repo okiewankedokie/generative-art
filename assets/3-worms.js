@@ -22,7 +22,8 @@ Brush.prototype.init = function ()
     this.dx = Math.random() - .5;
     this.dy = Math.random() - .5;
     this.size = Math.random() * 3 + 2;
-    this.color = '#'+Math.floor(Math.random()*16777215).toString(16); // elegant random color value code from http://www.paulirish.com/2009/random-hex-color-code-snippets/
+    // this.color = '#'+Math.floor(Math.random()*16777215).toString(16); // elegant random color value code from http://www.paulirish.com/2009/random-hex-color-code-snippets/
+    this.color = Math.random() > .5 ? '#fff' : '#f00';
 }
 
 Brush.prototype.update = function ()
@@ -33,7 +34,7 @@ Brush.prototype.update = function ()
 
         this.dx += (Math.random() - .5);
         this.dy += Math.random() - .5;
-
+        
         if (this.dx > 2) { this.dx = 2; }
         if (this.dx < -2) { this.dx = -2; }
 
@@ -46,11 +47,9 @@ Brush.prototype.update = function ()
             this.kill();
         }
 
-        /*
-        else if (this.size > 10) {
-            this.size = 10;
+        else if (this.size > 50) {
+            this.size = 50;
         }
-        */
 
         if ( Math.abs(this.x) > canvas.width / 2 || Math.abs(this.y) > canvas.height / 2 )
         {
@@ -144,6 +143,10 @@ function update()
             drawLine(brushes[i], brushes[i + j]);
         }
     }
+
+    ctx.globalAlpha = .05; // this determines how much it "smears"
+    zoomfactor = .001;
+    ctx.drawImage(canvas, -(canvas.width * (zoomfactor + 1)) / 2, -(canvas.height * (zoomfactor + 1)) / 2, canvas.width * (zoomfactor + 1), canvas.height * (zoomfactor + 1));
 }
 
 ctx.canvas.style.width='100%';
