@@ -173,7 +173,7 @@ ctx.fillRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height)
 
 var zoomfactor = .01;
 
-var num = 100;
+var num = 75;
 
 var brushes = [];
 for (i = 0; i < num; i++)
