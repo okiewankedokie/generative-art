@@ -24,7 +24,6 @@ Brush.prototype.init = function ()
 {
     this.age++;
     if (this.age > 1) { this.kill(); }
-    console.log(this.age);
 
     // this.alpha = .1;
     
