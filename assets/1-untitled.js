@@ -23,8 +23,7 @@ function Brush ()
 Brush.prototype.init = function ()
 {
     this.age++;
-    if (this.age > 1) { this.kill(); }
-    console.log(this.age);
+    /* if (this.age > 1) { this.kill(); } */
 
     // this.alpha = .1;
     
@@ -128,7 +127,7 @@ function update()
     ctx.translate(ctx.canvas.width / 2, ctx.canvas.height / 2);
     */
 
-    ctx.globalAlpha = .0;
+    ctx.globalAlpha = .005;
     ctx.fillStyle = '#000';
     ctx.fillRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
     
@@ -173,7 +172,7 @@ ctx.fillRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height)
 
 var zoomfactor = .01;
 
-var num = 100;
+var num = 5;
 
 var brushes = [];
 for (i = 0; i < num; i++)

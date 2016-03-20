@@ -40,7 +40,8 @@ Brush.prototype.init = function ()
     this.size = (canvas.height / 2 - this.y) * .2 + 20;
 
     // this.altcolor = '#'+Math.floor(Math.random()*16777215).toString(16); // elegant random color value code from http://www.paulirish.com/2009/random-hex-color-code-snippets/
-    this.color = ['#ccc', '#444', '#c44'][Math.floor(Math.random() * 3)];
+    /* this.color = ['#ccc', '#444', '#c44'][Math.floor(Math.random() * 3)]; */
+    this.color = ['#ccc', '#c44'][Math.floor(Math.random() * 2)];
     /* this.color = ['#ccc', '#444', this.altcolor][Math.floor(Math.random() * 3)]; */
     /* this.color = ['#ccc', '#444', '#'+Math.floor(Math.random()*16777215).toString(16)][Math.floor(Math.random() * 3)]; */
 }
@@ -133,8 +134,8 @@ function update()
     
     for (i = 0; i < num; i++)
     {
-        brushes[i].update(0, 0);
         brushes[i].draw();
+        brushes[i].update(0, 0);
     }
 
     // zoomfactor *= Math.random() < .01 ? -1 : 1;
