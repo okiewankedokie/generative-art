@@ -27,12 +27,15 @@ Brush.prototype.init = function ()
 
     // this.alpha = .1;
     
-    this.x = Math.random() * canvas.width - canvas.width / 2;
-    /* this.x = Math.floor((Math.random() * canvas.width - canvas.width / 2) / 100) * 100; */
-    /* this.x = canvas.width / 2 - Math.random()*Math.random()*Math.random()*canvas.width*2; */
-    /* this.y = Math.random() * canvas.height - canvas.height / 2; */
-    this.y = canvas.height / 2 - Math.random()*Math.random()*Math.random()*canvas.height*2;
-//    var dist = Math.sqrt(Math.pow(this.y, 2) + Math.pow(this.x, 2));
+    do {
+        this.x = Math.random() * canvas.width - canvas.width / 2;
+        /* this.x = Math.floor((Math.random() * canvas.width - canvas.width / 2) / 100) * 100; */
+        /* this.x = canvas.width / 2 - Math.random()*Math.random()*Math.random()*canvas.width*2; */
+        /* this.y = Math.random() * canvas.height - canvas.height / 2; */
+        this.y = canvas.height / 2 - Math.random()*Math.random()*Math.random()*canvas.height*2;
+    } while ( Math.abs(this.x) > canvas.width / 2 || Math.abs(this.y) > canvas.height / 2 );
+
+    // var dist = Math.sqrt(Math.pow(this.y, 2) + Math.pow(this.x, 2));
     this.dx = (Math.random() - .5);
     this.dy = (Math.random() - .5);
 
@@ -44,6 +47,10 @@ Brush.prototype.init = function ()
     this.color = ['#ccc', '#c44'][Math.floor(Math.random() * 2)];
     /* this.color = ['#ccc', '#444', this.altcolor][Math.floor(Math.random() * 3)]; */
     /* this.color = ['#ccc', '#444', '#'+Math.floor(Math.random()*16777215).toString(16)][Math.floor(Math.random() * 3)]; */
+    if ( Math.abs(this.x) > canvas.width / 2 || Math.abs(this.y) > canvas.height / 2 )
+    {
+        this.init();
+    }
 }
 
 Brush.prototype.update = function (x, y)
