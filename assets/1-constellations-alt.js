@@ -114,6 +114,8 @@ ctx.canvas.height = ctx.canvas.offsetHeight;
 
 ctx.translate(ctx.canvas.width / 2, ctx.canvas.height / 2);
 
+/* ctx.globalCompositeOperation = "lighter"; */
+
 var line_density = 7;
 
 var num = 250;
