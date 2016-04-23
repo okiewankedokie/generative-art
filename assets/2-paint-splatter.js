@@ -26,7 +26,9 @@ Brush.prototype.init = function ()
     this.dx = Math.random() - .5;
     this.dy = Math.random() - .5;
     this.size = Math.random() * 3 + 2;
-    this.color = '#'+Math.floor(Math.random()*16777215).toString(16); // elegant random color value code from http://www.paulirish.com/2009/random-hex-color-code-snippets/
+    // this.color = '#'+Math.floor(Math.random()*16777215).toString(16); // elegant random color value code from http://www.paulirish.com/2009/random-hex-color-code-snippets/
+    // this.color = tinycolor.fromRatio({ h:Math.random(), s:1, l:.5 });
+    this.color = tinycolor.fromRatio({ h:this.x / canvas.width + .5, s:1, l:.5 });
 }
 
 Brush.prototype.update = function ()
@@ -67,7 +69,7 @@ Brush.prototype.draw = function ()
         ctx.beginPath();
         ctx.globalAlpha = this.alpha;
         ctx.arc(this.x, this.y, this.size, 0, 2*Math.PI);
-        ctx.fillStyle = this.color;
+        ctx.fillStyle = this.color.toHexString();
         ctx.fill();
         ctx.closePath();
     }
