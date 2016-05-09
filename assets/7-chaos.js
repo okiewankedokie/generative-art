@@ -13,9 +13,9 @@ function Brush ()
     this.dy = 0;
     this.size = 1;
     this.color = '#FFFFFF';
-    this.alpha = .05;
+    this.alpha = .1;
     this.accel = 1.02;
-    this.tension = .001;
+    this.tension = .0002;
     this.alive = true;
 }
 
@@ -82,6 +82,21 @@ Brush.prototype.draw = function ()
         ctx.fillStyle = this.color;
         ctx.fill();
         ctx.closePath();
+
+        ctx.beginPath();
+        ctx.arc(-this.x, this.y, this.size, 0, 2*Math.PI);
+        ctx.fill();
+        ctx.closePath();
+
+        ctx.beginPath();
+        ctx.arc(-this.x, -this.y, this.size, 0, 2*Math.PI);
+        ctx.fill();
+        ctx.closePath();
+
+        ctx.beginPath();
+        ctx.arc(this.x, -this.y, this.size, 0, 2*Math.PI);
+        ctx.fill();
+        ctx.closePath();
     }
 }
 
@@ -140,7 +155,7 @@ ctx.fillRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height)
 
 var zoomfactor = .01;
 
-var num = 500;
+var num = 100;
 
 var brushes = [];
 for (i = 0; i < num; i++)
