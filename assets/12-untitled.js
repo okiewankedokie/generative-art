@@ -39,14 +39,15 @@ Brush.prototype.init = function ()
     this.color = '#'+Math.floor(Math.random()*16777215).toString(16);
 
     this.dcircle.angle = Math.random() * Math.PI * 2;
-    this.dcircle.size = Math.random() * .1;
+    this.dcircle.size = Math.pow(Math.random(), 2) * .01;
     this.dcircle.growth = Math.random() * .01 + .01;
-    this.dcircle.growth = -.001;
+    this.dcircle.growth = .00;
+    // this.dcircle.speed = Math.random() * 500;
     
-    this.growth = Math.random() * 50 + 20;
+    this.growth = Math.random() * 500 + 200;
 
     // this.max = Math.random() * 20 + 5;
-    this.max = dist / 50;
+    this.max = Math.random() * 500;
 }
 
 Brush.prototype.update = function ()
@@ -70,11 +71,12 @@ Brush.prototype.update = function ()
         }
         */
 
-        this.dx = Math.sin(this.dcircle.angle) * this.dcircle.speed;
-        this.dy = Math.cos(this.dcircle.angle) * this.dcircle.speed;
+        this.x = Math.sin(this.dcircle.angle) * this.dcircle.speed;
+        this.y = Math.cos(this.dcircle.angle) * this.dcircle.speed;
         
         this.dcircle.angle += this.dcircle.size;
         this.dcircle.size += this.dcircle.growth;
+        this.dcircle.speed = Math.sin(this.age / this.growth) * this.max;
 
         /*
         if (this.dx > 2) { this.dx = 2; }
@@ -84,7 +86,7 @@ Brush.prototype.update = function ()
         if (this.dy < -2) { this.dy = -2; }
         */
 
-        this.size = Math.sin(this.age / this.growth) * this.max;// Math.random() - .52;
+        this.size = Math.sin(this.age / this.growth * 2) * 10;// Math.random() - .52;
 
         if (this.size < 0) {
             this.init();
@@ -179,13 +181,14 @@ function update()
 {
     time++;
 
-    /*ctx.canvas.width  = window.innerWidth;
+    /*
+    ctx.canvas.width  = window.innerWidth;
     ctx.canvas.height = window.innerHeight;
     ctx.translate(ctx.canvas.width / 2, ctx.canvas.height / 2);
     */
-    ctx.globalAlpha = .01; //Math.sin(time / 200) * .01 + .01;
+    ctx.globalAlpha = .0; //Math.sin(time / 200) * .01 + .01;
 
-    ctx.fillStyle = '#fff';
+    ctx.fillStyle = '#000';
     ctx.fillRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
     
     var i;
@@ -203,14 +206,14 @@ function update()
         */
     }
 
+    ctx.globalAlpha = .0;
+    zoomfactor = .1;
     /*
-    ctx.globalAlpha = .03;
-    zoomfactor = Math.sin(time / 100) * .1;
-    shiftx = Math.random() * 2 - 1;
-    shifty = Math.random() * 2 - 1;
-    shiftx = shifty = 0;
-    ctx.drawImage(canvas, -(canvas.width * (zoomfactor + 1)) / 2 + shiftx, -(canvas.height * (zoomfactor + 1)) / 2 + shifty, canvas.width * (zoomfactor + 1), canvas.height * (zoomfactor + 1));
+    shiftx = Math.random() * 20;
+    shifty = Math.random() * 20;
     */
+    shiftx = shifty = 0;
+    // ctx.drawImage(canvas, -(canvas.width * (zoomfactor + 1)) / 2 + shiftx, -(canvas.height * (zoomfactor + 1)) / 2 + shifty, canvas.width * (zoomfactor + 1), canvas.height * (zoomfactor + 1));
 }
 
 ctx.canvas.style.width='100%';
@@ -238,7 +241,7 @@ var line_density = 0;
 
 var time = 0;
 
-var num = 100;
+var num = 25;
 var brushes = [];
 for (i = 0; i < num; i++)
 {
