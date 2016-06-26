@@ -28,25 +28,25 @@ Brush.prototype.init = function ()
 {
     this.age = 0;
 
-    this.x = Math.random() * canvas.width - canvas.width / 2; 
-    this.y = Math.random() * canvas.height - canvas.height / 2;
+    this.x = Math.floor((Math.random() * canvas.width - canvas.width / 2) / 400) * 400; 
+    this.y = Math.floor((Math.random() * canvas.height - canvas.height / 2) / 400) * 400;
     var dist = Math.sqrt(Math.pow(this.y, 2) + Math.pow(this.x, 2));
-    this.dx = Math.random() - .5;
-    this.dy = Math.random() - .5;
+    this.dx = Math.floor((Math.random() - .5) / .2) * .2;
+    this.dy = Math.floor((Math.random() - .5) / .2) * .2;
     this.size = 0;
     // this.color = '#'+Math.floor(Math.random()*16777215).toString(16); // elegant random color value code from http://www.paulirish.com/2009/random-hex-color-code-snippets/
     // this.color = Math.random() > .9 ? '#000' : '#'+Math.floor(Math.random()*16777215).toString(16);
     this.color = '#'+Math.floor(Math.random()*16777215).toString(16);
 
-    this.dcircle.angle = Math.random() * Math.PI * 2;
-    this.dcircle.size = Math.random() * .1;
-    this.dcircle.growth = Math.random() * .01 + .01;
+    this.dcircle.angle = Math.floor((Math.random() * Math.PI * 2) / (Math.PI / 2)) * (Math.PI / 2);
+    this.dcircle.size = Math.floor((Math.random() * .1) / .02) * .02;
+    // this.dcircle.growth = Math.random() * .01 + .01;
     this.dcircle.growth = -.001;
     
-    this.growth = Math.random() * 50 + 20;
+    this.growth = (Math.random() * 50 + 20);
 
     // this.max = Math.random() * 20 + 5;
-    this.max = dist / 50;
+    this.max = Math.random() * 10;
 }
 
 Brush.prototype.update = function ()
@@ -117,17 +117,17 @@ Brush.prototype.draw = function ()
         ctx.closePath();
 
         ctx.beginPath();
-        ctx.arc(-this.x, -this.y, size + 1, 0, 2*Math.PI);
-        ctx.fill();
-        ctx.closePath();
-
-        ctx.beginPath();
         ctx.arc(this.x, -this.y, size + 1, 0, 2*Math.PI);
         ctx.fill();
         ctx.closePath();
 
         ctx.beginPath();
         ctx.arc(-this.x, this.y, size + 1, 0, 2*Math.PI);
+        ctx.fill();
+        ctx.closePath();
+
+        ctx.beginPath();
+        ctx.arc(-this.x, -this.y, size + 1, 0, 2*Math.PI);
         ctx.fill();
         ctx.closePath();
 
@@ -179,14 +179,27 @@ function update()
 {
     time++;
 
+    /*
+    if (Math.random() < .001) {
+        mirror_y = !mirror_y;
+    }
+
+    if (Math.random() < .001) {
+        mirror_x = !mirror_x;
+    }
+    */
+
     /*ctx.canvas.width  = window.innerWidth;
     ctx.canvas.height = window.innerHeight;
     ctx.translate(ctx.canvas.width / 2, ctx.canvas.height / 2);
     */
     ctx.globalAlpha = .01; //Math.sin(time / 200) * .01 + .01;
 
+    // ctx.globalCompositeOperation = "lighten";
     ctx.fillStyle = '#fff';
     ctx.fillRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
+
+    // ctx.globalCompositeOperation = "source-over";
     
     var i;
     var j;
@@ -203,13 +216,15 @@ function update()
         */
     }
 
-    /*
-    ctx.globalAlpha = .03;
-    zoomfactor = Math.sin(time / 100) * .1;
-    shiftx = Math.random() * 2 - 1;
-    shifty = Math.random() * 2 - 1;
-    shiftx = shifty = 0;
+    ctx.globalAlpha = .02;
+    //zoomfactor = Math.sin(time / 100) * .1;
+    // zoomfactor = .3;
+    zoomfactor = 0;
+    shiftx = Math.random() * 20 - 10;
+    shifty = Math.random() * 20 - 10;
+    // shiftx = shifty = 0;
     ctx.drawImage(canvas, -(canvas.width * (zoomfactor + 1)) / 2 + shiftx, -(canvas.height * (zoomfactor + 1)) / 2 + shifty, canvas.width * (zoomfactor + 1), canvas.height * (zoomfactor + 1));
+    /*
     */
 }
 
@@ -231,7 +246,7 @@ window.addEventListener('keydown', function (e) {
     }
 }, false);
 
-ctx.fillStyle = '#000';
+ctx.fillStyle = '#fff';
 ctx.fillRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
 
 var line_density = 0;
