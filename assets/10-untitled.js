@@ -17,29 +17,47 @@ function Brush ()
     this.accel = 1.02;
     this.alive = true;
 
+    this.age = 0;
+    this.growth = 0;
+    this.max = 0;
+
     this.dcircle = {speed:2, angle:0, size:0, growth:0};
 }
 
 Brush.prototype.init = function ()
 {
+    this.age = 0;
+
     this.x = Math.random() * canvas.width - canvas.width / 2; 
     this.y = Math.random() * canvas.height - canvas.height / 2;
-//    var dist = Math.sqrt(Math.pow(this.y, 2) + Math.pow(this.x, 2));
+    var dist = Math.sqrt(Math.pow(this.y, 2) + Math.pow(this.x, 2));
     this.dx = Math.random() - .5;
     this.dy = Math.random() - .5;
-    this.size = Math.random() * 7 + 3;
+    this.size = 0;
     // this.color = '#'+Math.floor(Math.random()*16777215).toString(16); // elegant random color value code from http://www.paulirish.com/2009/random-hex-color-code-snippets/
-    this.color = Math.random() > .5 ? '#fff' : '#'+Math.floor(Math.random()*16777215).toString(16);
+    // this.color = Math.random() > .9 ? '#000' : '#'+Math.floor(Math.random()*16777215).toString(16);
+    this.color = '#'+Math.floor(Math.random()*16777215).toString(16);
 
     this.dcircle.angle = Math.random() * Math.PI * 2;
+    this.dcircle.size = Math.random() * .1;
+    this.dcircle.growth = Math.random() * .01 + .01;
+    this.dcircle.growth = -.001;
+    
+    this.growth = Math.random() * 50 + 20;
+
+    // this.max = Math.random() * 20 + 5;
+    this.max = dist / 50;
 }
 
 Brush.prototype.update = function ()
 {
     if (this.alive) {
+        this.age++;
+
         this.x += this.dx;
         this.y += this.dy;
 
+        /*
         if ( (this.dcircle.size == 0) && (Math.random() < .01) ) {
 
             this.dcircle.size = Math.random() * .1 + .1;
@@ -50,6 +68,7 @@ Brush.prototype.update = function ()
             this.dcircle.size = 0;
             this.dcircle.growth = 0;
         }
+        */
 
         this.dx = Math.sin(this.dcircle.angle) * this.dcircle.speed;
         this.dy = Math.cos(this.dcircle.angle) * this.dcircle.speed;
@@ -65,15 +84,17 @@ Brush.prototype.update = function ()
         if (this.dy < -2) { this.dy = -2; }
         */
 
-        this.size += Math.random() - .52;
+        this.size = Math.sin(this.age / this.growth) * this.max;// Math.random() - .52;
 
         if (this.size < 0) {
             this.init();
         }
 
+        /*
         else if (this.size > 100) {
             this.init();
         }
+        */
 
         if ( Math.abs(this.x) > canvas.width / 2 || Math.abs(this.y) > canvas.height / 2 )
         {
@@ -85,10 +106,33 @@ Brush.prototype.update = function ()
 Brush.prototype.draw = function ()
 {
     if (this.alive) {
-        size = 1;
+        size = this.size;
 
+        /* outlines */
         ctx.beginPath();
         ctx.globalAlpha = this.alpha;
+        ctx.arc(this.x, this.y, size + 1, 0, 2*Math.PI);
+        ctx.fillStyle = '#000';
+        ctx.fill();
+        ctx.closePath();
+
+        ctx.beginPath();
+        ctx.arc(-this.x, -this.y, size + 1, 0, 2*Math.PI);
+        ctx.fill();
+        ctx.closePath();
+
+        ctx.beginPath();
+        ctx.arc(this.x, -this.y, size + 1, 0, 2*Math.PI);
+        ctx.fill();
+        ctx.closePath();
+
+        ctx.beginPath();
+        ctx.arc(-this.x, this.y, size + 1, 0, 2*Math.PI);
+        ctx.fill();
+        ctx.closePath();
+
+        /* color */
+        ctx.beginPath();
         ctx.arc(this.x, this.y, size, 0, 2*Math.PI);
         ctx.fillStyle = this.color;
         ctx.fill();
@@ -107,42 +151,6 @@ Brush.prototype.draw = function ()
         ctx.beginPath();
         ctx.arc(-this.x, this.y, size, 0, 2*Math.PI);
         ctx.fill();
-        ctx.closePath();
-
-        /* lines */
-        length = Math.sqrt(Math.pow(this.x - this.x, 2) + Math.pow(this.y - -this.y, 2));
-
-        alpha = length < 200 ? .5 : 0;
-
-        ctx.globalAlpha = Math.max(0, alpha);
-        ctx.beginPath();
-        ctx.moveTo(this.x, this.y);
-        ctx.lineTo(this.x, -this.y);
-        ctx.strokeStyle = '#fff';
-        ctx.stroke();
-        ctx.closePath();
-
-        ctx.beginPath();
-        ctx.moveTo(-this.x, this.y);
-        ctx.lineTo(-this.x, -this.y);
-        ctx.stroke();
-        ctx.closePath();
-        
-        length = Math.sqrt(Math.pow(this.x - -this.x, 2) + Math.pow(this.y - this.y, 2));
-
-        alpha = length < 200 ? .5 : 0;
-
-        ctx.globalAlpha = Math.max(0, alpha);
-        ctx.beginPath();
-        ctx.moveTo(this.x, this.y);
-        ctx.lineTo(-this.x, this.y);
-        ctx.stroke();
-        ctx.closePath();
-
-        ctx.beginPath();
-        ctx.moveTo(this.x, -this.y);
-        ctx.lineTo(-this.x, -this.y);
-        ctx.stroke();
         ctx.closePath();
     }
 }
@@ -169,12 +177,16 @@ function drawLine(star1, star2)
 
 function update()
 {
-    
+    time++;
+
     /*ctx.canvas.width  = window.innerWidth;
     ctx.canvas.height = window.innerHeight;
     ctx.translate(ctx.canvas.width / 2, ctx.canvas.height / 2);
     */
-    ctx.globalAlpha = 1;
+    ctx.globalAlpha = 0; //Math.sin(time / 200) * .01 + .01;
+
+    ctx.fillStyle = '#000';
+    ctx.fillRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
     
     var i;
     var j;
@@ -183,11 +195,22 @@ function update()
         brushes[i].update();
         brushes[i].draw();
 
+        /*
         for (j = 0; j < num - i && j < line_density; j++)
         {
             drawLine(brushes[i], brushes[i + j]);
         }
+        */
     }
+
+    /*
+    ctx.globalAlpha = .03;
+    zoomfactor = Math.sin(time / 100) * .1;
+    shiftx = Math.random() * 2 - 1;
+    shifty = Math.random() * 2 - 1;
+    shiftx = shifty = 0;
+    ctx.drawImage(canvas, -(canvas.width * (zoomfactor + 1)) / 2 + shiftx, -(canvas.height * (zoomfactor + 1)) / 2 + shifty, canvas.width * (zoomfactor + 1), canvas.height * (zoomfactor + 1));
+    */
 }
 
 ctx.canvas.style.width='100%';
@@ -213,7 +236,9 @@ ctx.fillRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height)
 
 var line_density = 0;
 
-var num = 5;
+var time = 0;
+
+var num = 50;
 var brushes = [];
 for (i = 0; i < num; i++)
 {
